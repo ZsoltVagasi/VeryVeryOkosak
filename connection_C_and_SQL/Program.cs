@@ -7,14 +7,14 @@ namespace TestApplication
 {
     class Program
     {
-		
-		static string connectionString = "SERVER = DESKTOP-9A2J9E7\\SQLEXPRESS; DATABASE = MatematikApp; USER ID = Vagasi; PASSWORD = 123; Trusted_Connection=True;";
-		SqlConnection sqlcon = new SqlConnection(connectionString);
+
+		static string connectionString = "SERVER = DESKTOP-3T8JJJB\\SQLEXPRESS; DATABASE = MatematikApp; USER ID = Vagasi; PASSWORD = 123; Trusted_Connection=True;";
+
 		static void Main(string[] args)
         {
-
-            string my_query;
-			string query1, query2;
+			SqlConnection sqlcon = new SqlConnection(connectionString);
+			string my_query=" ";
+			string query1, query2, query3, query4, query5, query6, query7, query8;
 			// Console.WriteLine("Olvasson be SQL utasitasokat * vegjelig: ", '\n');
 			//Console.WriteLine("Olvasson be egy SQL utasitast: ", '\n');
 			Console.WriteLine("Valassza ki az utasitast \n Login \n Register \n User \n Insert");
@@ -23,18 +23,15 @@ namespace TestApplication
 				switch(Command)
 				{
 					case "Login":
-					string query1, query2;
+					
 					Console.WriteLine("Felhasznalonev");
 							query1 = Console.ReadLine();
 						Console.WriteLine("\n Jelszo");
 							query2 = Console.ReadLine();
 
-					SqlCommand cmd = new SqlCommand(my_query, sqlcon);
+					
 					break;
 				case "Register":
-					
-					Console.WriteLine("Felhasznalonev");
-					string query1, query2, query3, query4, query5, query6, query7, query8;
 					Console.WriteLine("\n Felhasznalo: ");
 					query1 = Console.ReadLine();
 					Console.WriteLine("\n Jelszo: ");
@@ -51,26 +48,75 @@ namespace TestApplication
 					query7 = Console.ReadLine();
 					Console.WriteLine("\n Tantargy: ");
 					query8 = Console.ReadLine();
-					if (query2 = query3)
-						my_query = "Insert Into Regisztracio (Nev,Jelszo,Jelszo_Megerosites,Role,Szak,Evfolyam,TantargySzam,Tantargy) Values (query1,query2,query3,query4,query5,query6,query7,query8)";
+					bool result = query2.Equals(query3);
+					if (result)
+					{
+						using (sqlcon)
+						{
+							string Command1 = "INSERT INTO Regisztracio (" +
+								"[Nev]," +
+								"[Jelszo]," +
+								"Jelszo_Megerosites," +
+								"Role," +
+								"Szak," +
+								"Evfolyam," +
+								"TantargySzam," +
+								"Tantargy)" +
+								" VALUES (" +
+								"@query1," +
+								"@query2," +
+								"@query3," +
+								"@query4," +
+								"@query5," +
+								"@query6," +
+								"@query7," +
+								"@query8);";
+							SqlCommand cmda = new SqlCommand(Command1, sqlcon);
+
+							cmda.Parameters.AddWithValue("@query1", query1);
+							cmda.Parameters.AddWithValue("@query2", query2);
+							cmda.Parameters.AddWithValue("@query3", query3);
+							cmda.Parameters.AddWithValue("@query4", query4);
+							cmda.Parameters.AddWithValue("@query5", query5);
+							cmda.Parameters.AddWithValue("@query6", query6);
+							cmda.Parameters.AddWithValue("@query7", query7);
+							cmda.Parameters.AddWithValue("@query8", query8);
+
+							try
+							{
+								sqlcon.Open();
+								Int32 rowsAffected = cmda.ExecuteNonQuery();
+								Console.WriteLine("RowsAffected: {0}", rowsAffected);
+							}
+							catch (Exception ex)
+							{
+								Console.WriteLine(ex.Message);
+							}
+
+						}
+					}
 					else
-						Console.WriteLine("A jelszavak nem egyeznek meg");
-					SqlCommand cmd = new SqlCommand(my_query, sqlcon);
+						Console.WriteLine("A jelszavak nem egyeznek meg"); 
+					
+					Console.WriteLine("Registration is sucessfull!");
+					break;
+				default:
+					Console.WriteLine("Nincs parancs");
+					my_query = " ";
 					break;
 
-
-			}
-
-                my_query = Console.ReadLine();
+				}
+				//SqlCommand cmd = new SqlCommand(my_query, sqlcon);
+				//my_query = Console.ReadLine();
 
                 /*if (my_query.Equals("*")) {
 
                     break;
                 }*/
 
-                SqlCommand cmd = new SqlCommand(my_query, sqlcon);
+              
 
-                using (sqlcon)
+               /* using (sqlcon)
                 {
                     try
                     {
@@ -101,7 +147,7 @@ namespace TestApplication
                         Console.ReadKey();
                     }
 
-                }
+                }*/
 
             
         }
